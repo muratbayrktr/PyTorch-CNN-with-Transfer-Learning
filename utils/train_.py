@@ -83,7 +83,7 @@ def train_model(model, model_name, dataloaders, criterion, optimizer, run, devic
                 #wandb.watch(model)
 
             if phase == 'val':
-                wandb.log({"train_loss": epoch_loss,"train_acc":epoch_acc})
+                wandb.log({"val_loss": epoch_loss,"val_acc":epoch_acc})
 
         print()
 
@@ -94,7 +94,7 @@ def train_model(model, model_name, dataloaders, criterion, optimizer, run, devic
     # load best model weights
     model.load_state_dict(best_model_wts)
     # Save your model.
-    torch.save(model.state_dict(), 'models/'+ model_name + '_' + str(epoch_acc) +'.pth')
+    #torch.save(model.state_dict(), 'models/'+ model_name + '_' + str(epoch_acc) +'.pth')
 
     return model, val_acc_history
 
