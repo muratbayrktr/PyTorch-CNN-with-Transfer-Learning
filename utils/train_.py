@@ -71,16 +71,19 @@ def train_model(model, model_name, dataloaders, criterion, optimizer, run, devic
             if phase == 'val' and epoch_acc > best_acc:
                 best_acc = epoch_acc
                 best_model_wts = copy.deepcopy(model.state_dict())
+                # Save artifact
+                artifact = wandb.Artifact(model_name, type='model')
+                run.log_artifact(artifact)
             if phase == 'val':
                 val_acc_history.append(epoch_acc)
         
-        wandb.log({"loss": epoch_loss,"epoch":epoch,"acc":epoch_acc})
+            if phase == 'train':
+                wandb.log({"train_loss": epoch_loss,"train_acc":epoch_acc})
+                # Optional
+                #wandb.watch(model)
 
-        artifact = wandb.Artifact(model_name, type='model')
-        run.log_artifact(artifact)
-
-        # Optional
-        wandb.watch(model)
+            if phase == 'val':
+                wandb.log({"train_loss": epoch_loss,"train_acc":epoch_acc})
 
         print()
 
