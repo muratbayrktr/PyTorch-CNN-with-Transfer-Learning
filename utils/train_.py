@@ -2,7 +2,7 @@ import time
 import copy
 import torch
 import wandb
-import os
+
 
 def train_model(model, model_name, dataloaders, criterion, optimizer, run, device, num_epochs=25, is_inception=False):
     since = time.time()
@@ -72,7 +72,9 @@ def train_model(model, model_name, dataloaders, criterion, optimizer, run, devic
                 best_acc = epoch_acc
                 best_model_wts = copy.deepcopy(model.state_dict())
                 # Save artifact
+                torch.save(model, 'models/'+ model_name + '_' + str(epoch_acc) +'.pt')
                 artifact = wandb.Artifact(model_name, type='model')
+                artifact.add_file('models/'+ model_name + '_' + str(epoch_acc) +'.pt')
                 run.log_artifact(artifact)
             if phase == 'val':
                 val_acc_history.append(epoch_acc)
@@ -94,7 +96,7 @@ def train_model(model, model_name, dataloaders, criterion, optimizer, run, devic
     # load best model weights
     model.load_state_dict(best_model_wts)
     # Save your model.
-    #torch.save(model.state_dict(), 'models/'+ model_name + '_' + str(epoch_acc) +'.pth')
+    torch.save(model, 'models/'+ model_name + '_' + str(epoch_acc) +'.pt')
 
     return model, val_acc_history
 
